@@ -6,7 +6,7 @@ const baseHost = "https://webdev-hw-api.vercel.app";
 const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
 
 export function getPosts() {
-  return fetch("https://wedev-api.sky.pro/api/v1/prod/instapro", {
+  return fetch(postsHost, {
     method: "GET",
     // headers: {
     //   Authorization: token,
