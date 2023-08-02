@@ -1,4 +1,4 @@
-import { getPosts, getAllUsers } from "./api.js";
+import { getPosts, postPost } from "./api.js";
 import { renderAddPostPageComponent } from "./components/add-post-page-component.js";
 import { renderAuthPageComponent } from "./components/auth-page-component.js";
 import {
@@ -54,16 +54,16 @@ export const goToPage = (newPage, data) => {
       page = LOADING_PAGE;
       renderApp();
 
-      // return getPosts({ token: getToken() })
-      //   .then((newPosts) => {
-      //     page = POSTS_PAGE;
-      //     posts = newPosts;
-      //     renderApp();
-      //   })
-      //   .catch((error) => {
-      //     console.error(error);
-      //     goToPage(POSTS_PAGE);
-      //   });
+      return getPosts({ token: getToken() })
+        .then((newPosts) => {
+          page = POSTS_PAGE;
+          posts = newPosts;
+          renderApp();
+        })
+        .catch((error) => {
+          console.error(error);
+          goToPage(POSTS_PAGE);
+        });
     }
 
     if (newPage === USER_POSTS_PAGE) {
@@ -85,6 +85,7 @@ export const goToPage = (newPage, data) => {
 
 const renderApp = () => {
   const appEl = document.getElementById("app");
+  
   if (page === LOADING_PAGE) {
     return renderLoadingPageComponent({
       appEl,
@@ -108,12 +109,21 @@ const renderApp = () => {
 
   if (page === ADD_POSTS_PAGE) {
     return renderAddPostPageComponent({
+      
       appEl,
       onAddPostClick({ description, imageUrl }) {
         // TODO: реализовать добавление поста в API
+
         console.log("Добавляю пост...", { description, imageUrl });
-        goToPage(POSTS_PAGE);
+        postPost ({token: getToken() })
+        .then(()=>{
+          goToPage(POSTS_PAGE);
+
+        })
+
+        // goToPage(POSTS_PAGE);
       },
+   
     });
   }
 
@@ -130,5 +140,5 @@ const renderApp = () => {
   }
 };
 
-goToPage(POSTS_PAGE);
+goToPage(ADD_POSTS_PAGE);
 

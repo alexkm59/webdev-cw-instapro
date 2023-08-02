@@ -74,16 +74,26 @@ export function uploadImage({ file }) {
   });
 }
 
-// получаем список пользователей
+// КАМ функция добавления постов
 
-export function getAllUsers() {
+export function postPost ({token}) {
+
+  return fetch(postsHost, {
+
+    method: "GET",
+      headers: {
+        Authorization: token, 
+    },
   
-  return fetch(baseHost + "/api/user", 
-  {
-    method: "POST",
-  
-  }).then((response) => {
-   return response.json(); 
-  });
+})
+  .then((response) => {
+if (response.status === 400) {
+  throw new Error("В теле запроса не передан description или В теле запроса не передан imageUrl или В description - пустая строчка.");
+}
+
+return response.json();
+})
+
+
 }
 
