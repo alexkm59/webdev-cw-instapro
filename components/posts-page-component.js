@@ -1,7 +1,7 @@
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage } from "../index.js";
-import { getPostsWA, getPosts } from "../api.js";
+import { posts, goToPage, getToken, } from "../index.js";
+import { getPosts} from "../api.js";
 
 
 export function renderPostsPageComponent({ appEl }) {
@@ -13,19 +13,18 @@ console.log(appEl);
    * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
    */
   
-  getPosts()
+  getPosts({token: getToken() })
         .then((data) => {
             // Преобразование данных из формата api в формат приложения
             // const postElement = document.getElementById('add');
             
             console.log(appEl);
-
-            const appElHtml = data.posts.map((posts) => {
-              return `
+            const postsElementHtml = document.querySelector(".posts");
+            const postsElHtml = data.posts.map((posts) => {
+              return ` 
               <div class="page-container">
-                 <div class="header-container"></div>
-                 <ul class="posts">
-                  <li class="post">
+                 <div class="header-container"></div>   
+              <li class="post">
                      <div class="post-header" data-user-id="${posts.user.id}">
                          <img src="${posts.user.imageUrl}" class="post-header__user-image">
                          <p class="post-header__user-name">${posts.user.name}</p>
@@ -50,21 +49,21 @@ console.log(appEl);
                      </p>`
           
             }).join("");
-            appEl.innerHTML = appElHtml; 
-           
-            renderHeaderComponent({
-              element: document.querySelector(".header-container"),
-            }); 
+             postsElementHtml.innerHTML = postsElHtml; 
             
+             
+                  
         });
-
         
+       renderHeaderComponent({
+          element: document.querySelector(".header-container"),
+        });  
 
   // const appHtml = `
   //             <div class="page-container">
   //               <div class="header-container"></div>
   //               <ul class="posts">
-  //                 <li class="post">
+  //                   <li class="post">
   //                   <div class="post-header" data-user-id="642d00329b190443860c2f31">
   //                       <img src="https://www.imgonline.com.ua/examples/bee-on-daisy.jpg" class="post-header__user-image">
   //                       <p class="post-header__user-name">Иван Иваныч</p>
@@ -87,6 +86,7 @@ console.log(appEl);
   //                   <p class="post-date">
   //                     19 минут назад
   //                   </p>
+  //                 
   //                 </li>
   //                 <li class="post">
   //                   <div class="post-header" data-user-id="6425602ce156b600f7858df2">

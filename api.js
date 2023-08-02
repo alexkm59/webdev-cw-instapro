@@ -4,21 +4,25 @@
 const personalKey = ":alex-karmanov";
 const baseHost = "https://webdev-hw-api.vercel.app";
 const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
+const prodHost = "https://wedev-api.sky.pro/api/v1/prod/instapro";
 
-export function getPosts() {
-  return fetch(postsHost, {
-    method: "GET",
-    // headers: {
-    //   Authorization: token,
-    // },
-  })
+export function getPosts({token}) {
+  
+    return fetch(postsHost, {
+
+      method: "GET",
+        headers: {
+          Authorization: token, 
+      },
+    
+})
     .then((response) => {
-      if (response.status === 401) {
-        throw new Error("Нет авторизации");
-      }
+  if (response.status === 401) {
+    throw new Error("Нет авторизации");
+  }
 
-      return response.json();
-    })
+  return response.json();
+})
     // .then((data) => {
     //   return data.posts;
     // });
@@ -70,15 +74,16 @@ export function uploadImage({ file }) {
   });
 }
 
-// Реализация рендер постов из api
+// получаем список пользователей
 
-export function getPostsWA(){
-  return fetch(postsHost, {
-    method: "GET",
-  })
-  .then((response) => {
-    
-    return response.json();
-  })
+export function getAllUsers() {
   
+  return fetch(baseHost + "/api/user", 
+  {
+    method: "POST",
+  
+  }).then((response) => {
+   return response.json(); 
+  });
 }
+

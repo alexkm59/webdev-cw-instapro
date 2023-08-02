@@ -1,4 +1,4 @@
-import { getPosts } from "./api.js";
+import { getPosts, getAllUsers } from "./api.js";
 import { renderAddPostPageComponent } from "./components/add-post-page-component.js";
 import { renderAuthPageComponent } from "./components/auth-page-component.js";
 import {
@@ -20,7 +20,7 @@ export let user = getUserFromLocalStorage();
 export let page = null;
 export let posts = [];
 
-const getToken = () => {
+export const getToken = () => {
   const token = user ? `Bearer ${user.token}` : undefined;
   return token;
 };
@@ -36,14 +36,14 @@ export const logout = () => {
  */
 export const goToPage = (newPage, data) => {
   if (
-    [
-      POSTS_PAGE,
-      AUTH_PAGE,
-      ADD_POSTS_PAGE,
-      USER_POSTS_PAGE,
-      LOADING_PAGE,
-    ].includes(newPage)
-  ) {
+        [
+        POSTS_PAGE,
+        AUTH_PAGE,
+        ADD_POSTS_PAGE,
+        USER_POSTS_PAGE,
+        LOADING_PAGE,
+        ].includes(newPage)
+      ) {
     if (newPage === ADD_POSTS_PAGE) {
       // Если пользователь не авторизован, то отправляем его на авторизацию перед добавлением поста
       page = user ? ADD_POSTS_PAGE : AUTH_PAGE;
@@ -54,16 +54,16 @@ export const goToPage = (newPage, data) => {
       page = LOADING_PAGE;
       renderApp();
 
-      return getPosts({ token: getToken() })
-        .then((newPosts) => {
-          page = POSTS_PAGE;
-          posts = newPosts;
-          renderApp();
-        })
-        .catch((error) => {
-          console.error(error);
-          goToPage(POSTS_PAGE);
-        });
+      // return getPosts({ token: getToken() })
+      //   .then((newPosts) => {
+      //     page = POSTS_PAGE;
+      //     posts = newPosts;
+      //     renderApp();
+      //   })
+      //   .catch((error) => {
+      //     console.error(error);
+      //     goToPage(POSTS_PAGE);
+      //   });
     }
 
     if (newPage === USER_POSTS_PAGE) {
@@ -131,3 +131,4 @@ const renderApp = () => {
 };
 
 goToPage(POSTS_PAGE);
+
