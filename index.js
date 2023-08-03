@@ -1,4 +1,4 @@
-import { getPosts, postPost } from "./api.js";
+import { getPosts, postPost, getUserPosts } from "./api.js";
 import { renderAddPostPageComponent } from "./components/add-post-page-component.js";
 import { renderAuthPageComponent } from "./components/auth-page-component.js";
 import {
@@ -35,6 +35,8 @@ export const logout = () => {
  * Включает страницу приложения
  */
 export const goToPage = (newPage, data) => {
+  console.log(newPage);
+  console.log(data);
   if (
         [
         POSTS_PAGE,
@@ -54,6 +56,8 @@ export const goToPage = (newPage, data) => {
       page = LOADING_PAGE;
       renderApp();
 
+      
+      // КАМ не понял смысла данного кода
       return getPosts({ token: getToken() })
         .then((newPosts) => {
           page = POSTS_PAGE;
@@ -68,20 +72,28 @@ export const goToPage = (newPage, data) => {
 
     if (newPage === USER_POSTS_PAGE) {
       // TODO: реализовать получение постов юзера из API
+      // console.log("Открываю страницу пользователя: ", data.userId);
       console.log("Открываю страницу пользователя: ", data.userId);
+      
+      return getUserPosts(data.userId)
+      .then(() => {
       page = USER_POSTS_PAGE;
       posts = [];
       return renderApp();
+      })
+
     }
 
-    page = newPage;
-    renderApp();
+    // page = newPage;
+    // renderApp();
 
-    return;
+    // return;
   }
 
   throw new Error("страницы не существует");
 };
+
+
 
 const renderApp = () => {
   const appEl = document.getElementById("app");
@@ -115,7 +127,7 @@ const renderApp = () => {
         // TODO: реализовать добавление поста в API
 
         console.log("Добавляю пост...", { description, imageUrl });
-        postPost ({token: getToken() })
+        postPost ({description, imageUrl, token: getToken() })
         .then(()=>{
           goToPage(POSTS_PAGE);
 
@@ -130,6 +142,7 @@ const renderApp = () => {
   if (page === POSTS_PAGE) {
     return renderPostsPageComponent({
       appEl,
+      posts,
     });
   }
 
@@ -140,5 +153,5 @@ const renderApp = () => {
   }
 };
 
-goToPage(ADD_POSTS_PAGE);
+goToPage(POSTS_PAGE);
 

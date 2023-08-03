@@ -4,23 +4,25 @@ import { posts, goToPage, getToken, } from "../index.js";
 import { getPosts} from "../api.js";
 
 
-export function renderPostsPageComponent({ appEl }) {
+export function renderPostsPageComponent({ appEl, posts }) {
   // TODO: реализовать рендер постов из api
-  console.log("Актуальный список постов:", posts);
+
+console.log("Актуальный список постов:", posts);
 console.log(appEl);
+console.log(posts);
   /**
    * TODO: чтобы отформатировать дату создания поста в виде "19 минут назад"
    * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
    */
   
-  getPosts({token: getToken() })
-        .then((data) => {
+  // getPosts({token: getToken() })
+  //       .then((data) => {
             // Преобразование данных из формата api в формат приложения
             // const postElement = document.getElementById('add');
             
-            console.log(appEl);
-            const postsElementHtml = document.querySelector(".posts");
-            const postsElHtml = data.posts.map((posts) => {
+            
+            const postsElementHtml = document.getElementById("app");
+            const postsElHtml = posts.map(() => {
               return ` 
               <div class="page-container">
                  <div class="header-container"></div>   
@@ -49,15 +51,29 @@ console.log(appEl);
                      </p>`
           
             }).join("");
-             postsElementHtml.innerHTML = postsElHtml; 
-            
              
-                  
-        });
+            postsElementHtml.innerHTML = postsElHtml; 
+            
+             renderHeaderComponent({
+              element: document.querySelector(".header-container"),
+            });  
+            // KAM Событие для перехода на страницу постов пользователя 
+            for (let userEl of document.querySelectorAll(".post-header")) {
+              userEl.addEventListener("click", () => {
+                goToPage(USER_POSTS_PAGE, {
+                  userId: userEl.dataset.userId,
+                });
+              });
+            }
+        // });
         
-       renderHeaderComponent({
-          element: document.querySelector(".header-container"),
-        });  
+      //  renderHeaderComponent({
+      //     element: document.querySelector(".header-container"),
+        
+        
+        
+        
+        // });  
 
   // const appHtml = `
   //             <div class="page-container">
@@ -152,12 +168,12 @@ console.log(appEl);
   
 
   // KAM Событие для перехода на страницу постов пользователя
-  for (let userEl of document.querySelectorAll(".post-header")) {
-    userEl.addEventListener("click", () => {
-      goToPage(USER_POSTS_PAGE, {
-        userId: userEl.dataset.userId,
-      });
-    });
-  }
+  // for (let userEl of document.querySelectorAll(".post-header")) {
+  //   userEl.addEventListener("click", () => {
+  //     goToPage(USER_POSTS_PAGE, {
+  //       userId: userEl.dataset.userId,
+  //     });
+  //   });
+  // }
  
 }
