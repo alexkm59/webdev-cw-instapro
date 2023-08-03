@@ -8,8 +8,7 @@ export function renderPostsPageComponent({ appEl, posts }) {
   // TODO: реализовать рендер постов из api
 
 console.log("Актуальный список постов:", posts);
-console.log(appEl);
-console.log(posts);
+
   /**
    * TODO: чтобы отформатировать дату создания поста в виде "19 минут назад"
    * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
@@ -22,7 +21,7 @@ console.log(posts);
             
             
             const postsElementHtml = document.getElementById("app");
-            const postsElHtml = posts.map(() => {
+            const postsElHtml = posts.map((posts) => {
               return ` 
               <div class="page-container">
                  <div class="header-container"></div>   
@@ -60,6 +59,7 @@ console.log(posts);
             // KAM Событие для перехода на страницу постов пользователя 
             for (let userEl of document.querySelectorAll(".post-header")) {
               userEl.addEventListener("click", () => {
+                console.log(userEl);
                 goToPage(USER_POSTS_PAGE, {
                   userId: userEl.dataset.userId,
                 });

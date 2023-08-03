@@ -56,8 +56,6 @@ export const goToPage = (newPage, data) => {
       page = LOADING_PAGE;
       renderApp();
 
-      
-      // КАМ не понял смысла данного кода
       return getPosts({ token: getToken() })
         .then((newPosts) => {
           page = POSTS_PAGE;
@@ -72,22 +70,23 @@ export const goToPage = (newPage, data) => {
 
     if (newPage === USER_POSTS_PAGE) {
       // TODO: реализовать получение постов юзера из API
-      // console.log("Открываю страницу пользователя: ", data.userId);
+      
       console.log("Открываю страницу пользователя: ", data.userId);
       
       return getUserPosts(data.userId)
-      .then(() => {
+      .then((newPosts) => {
       page = USER_POSTS_PAGE;
-      posts = [];
+      // posts = [];
+      posts = newPosts;
       return renderApp();
       })
 
     }
 
-    // page = newPage;
-    // renderApp();
+    page = newPage;
+    renderApp();
 
-    // return;
+    return;
   }
 
   throw new Error("страницы не существует");
@@ -148,8 +147,14 @@ const renderApp = () => {
 
   if (page === USER_POSTS_PAGE) {
     // TODO: реализовать страницу фотографию пользвателя
-    appEl.innerHTML = "Здесь будет страница фотографий пользователя";
-    return;
+    // appEl.innerHTML = "Здесь будет страница фотографий пользователя";
+
+    // KAM пробуем переиспользовать функцию
+    return renderPostsPageComponent({
+      appEl,
+      posts,
+    });
+    // return;
   }
 };
 

@@ -102,11 +102,11 @@ export function postPost({ description, imageUrl, token }) {
 
 
 // КАМ функция получения постов пользователя
-export function getUserPosts({data}) {
+export function getUserPosts(data) {
 
-  return fetch(postsHost + "/user-posts/:" + data , {
+  return fetch(postsHost + "/user-posts/" + data , {
 
-    method: "POST",
+    method: "GET",
     // headers: {
     //   Authorization: token,
     // },
@@ -123,5 +123,9 @@ export function getUserPosts({data}) {
 
       return response.json();
     })
+    .then((data) => {
+      console.log(data.posts);
+      return data.posts;
+    });
 
 }
