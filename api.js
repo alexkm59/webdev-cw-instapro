@@ -127,5 +127,59 @@ export function getUserPosts(data) {
       console.log(data.posts);
       return data.posts;
     });
+}
 
+// КАМ функция добавления лайка
+
+export function addLike({ id, token }) {
+
+  return fetch(postsHost + "/" + id + "/like" , {
+
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
+    
+
+  })
+    .then((response) => {
+      if (response.status === 401) {
+        throw new Error("Вы не авторизованы, авторизуйтесь для установки лайка");
+      }
+
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      return data;
+    });
+}
+
+// КАМ функция добавления лайка
+
+export function dislike({ id, token }) {
+
+  return fetch(postsHost + "/" + id + "/dislike" , {
+
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
+   
+
+  })
+    .then((response) => {
+      if (response.status === 401) {
+        throw new Error("Вы не авторизованы, авторизуйтесь для удаления лайка");
+      }
+
+      return response.json();
+    })
+    // .then((data) => {
+    //   console.log(data);
+    //   return data;
+    // });
+
+    
+    
 }
