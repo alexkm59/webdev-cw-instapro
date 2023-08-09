@@ -1,6 +1,9 @@
 // Замени на свой, чтобы получить независимый от других набор данных.
 // "боевая" версия инстапро лежит в ключе prod
 // const personalKey = "prod";
+import {getToken, renderApp} from "./index.js";
+import {renderPostsPageComponent} from "./components/posts-page-component.js";
+
 const personalKey = ":alex-karmanov";
 const baseHost = "https://webdev-hw-api.vercel.app";
 const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
@@ -149,13 +152,19 @@ export function addLike({ id, token }) {
 
       return response.json();
     })
-    .then((data) => {
-      console.log(data);
-      return data;
-    });
+    .then (() =>{
+      return getPosts({ token: getToken() })
+    }) 
+              .then((posts) => {
+                return renderPostsPageComponent({
+                  // appEl,
+                  posts,
+                });
+              })
+    
 }
 
-// КАМ функция добавления лайка
+// КАМ функция удаления лайка
 
 export function dislike({ id, token }) {
 
@@ -172,14 +181,18 @@ export function dislike({ id, token }) {
       if (response.status === 401) {
         throw new Error("Вы не авторизованы, авторизуйтесь для удаления лайка");
       }
-
+      
       return response.json();
     })
-    // .then((data) => {
-    //   console.log(data);
-    //   return data;
-    // });
+    .then (() =>{
+      return getPosts({ token: getToken() })
+    }) 
+              .then((posts) => {
+                return renderPostsPageComponent({
+                  // appEl,
+                  posts,
+                });
+              })
 
-    
     
 }
