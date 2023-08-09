@@ -1,5 +1,6 @@
 import {renderHeaderComponent} from "./header-component.js";
 import {uploadImage} from "../api.js";
+import {sanitizeHtml} from "../sanitizeHtml.js";
 
 export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
   let imageUrl = "";
@@ -92,7 +93,7 @@ const imageUrlElement = document.querySelector('.file-upload-label');
     document.getElementById("add-button").addEventListener("click", () => {
       // const file = imageUrlElement.value;
       onAddPostClick({
-        description: descriptionElement.value,
+        description: sanitizeHtml(descriptionElement.value),
         imageUrl: imageUrl,
       });
     });

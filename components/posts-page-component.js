@@ -2,7 +2,7 @@ import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage, getToken, renderApp } from "../index.js";
 import { addLike, dislike } from "../api.js";
-
+import { format } from "date-fns";
 
 export function renderPostsPageComponent({ posts }) {
   // TODO: реализовать рендер постов из api
@@ -22,6 +22,7 @@ export function renderPostsPageComponent({ posts }) {
 
   const postsElementHtml = document.getElementById("app");
   const postsElHtml = posts.map((posts) => {
+    const createDate = format( new Date(posts.createdAt), 'dd.mm.yy HH:mm');
     return ` 
               <div class="page-container">
                  <div class="header-container"></div>   
@@ -38,7 +39,10 @@ export function renderPostsPageComponent({ posts }) {
                          <img src= ${(posts.isLiked) ? "./assets/images/like-active.svg" : "./assets/images/like-not-active.svg"}>
                        </button>
                        <p class="post-likes-text">
-                         Нравится: <strong>2</strong>
+                         Нравится: <strong>
+                           ${(posts.likes.length >= 1) ? posts.likes[0].name : (posts.likes.length > 2) ? `и еще` (posts.likes.length - 1) : 0}
+                          
+                          </strong>
                        </p>
                      </div>
                      <p class="post-text">
@@ -46,7 +50,7 @@ export function renderPostsPageComponent({ posts }) {
                        ${posts.description}
                      </p>
                      <p class="post-date">
-                       ${posts.createdAt}
+                       ${createDate}
                      </p>`
 
   }).join("");
@@ -76,7 +80,7 @@ export function renderPostsPageComponent({ posts }) {
         if (likeElement.dataset.isliked === 'true') {
           dislike({ id: likeElement.dataset.postId, token: getToken() })
           .then(() => {
-            return renderApp();
+             renderApp();
 
           })
 
@@ -84,12 +88,12 @@ export function renderPostsPageComponent({ posts }) {
         else {
           addLike({ id: likeElement.dataset.postId, token: getToken() })
             .then(() => {
-             return renderApp();
+              renderApp();
 
               // alert("Ура лайк!");
-            })
+            });
 
-        }
+        };
         
       })
 
@@ -99,7 +103,7 @@ export function renderPostsPageComponent({ posts }) {
   };
 
 
-
+ 
   likeElementFunction();
 
   // const likeElement = document.querySelector(".like-button");

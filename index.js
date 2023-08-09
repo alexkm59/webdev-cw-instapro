@@ -16,6 +16,7 @@ import {
   saveUserToLocalStorage,
 } from "./helpers.js";
 
+
 export let user = getUserFromLocalStorage();
 export let page = null;
 export let posts = [];
