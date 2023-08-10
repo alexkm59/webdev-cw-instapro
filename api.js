@@ -110,13 +110,7 @@ export function getUserPosts(data) {
   return fetch(postsHost + "/user-posts/" + data , {
 
     method: "GET",
-    // headers: {
-    //   Authorization: token,
-    // },
-    // body: JSON.stringify({
-    //   description,
-    //   imageUrl,
-    // }),
+    
 
   })
     .then((response) => {

@@ -23,9 +23,9 @@ export function renderPostsPageComponent({ posts }) {
 
   const postsElementHtml = document.getElementById("app");
   const postsElHtml = posts.map((posts) => {
+    
     const createDate = format(new Date(posts.createdAt), 'dd.mm.yy HH:mm');
     
-   
     return ` 
               <div class="page-container">
                  <div class="header-container"></div>   
@@ -63,6 +63,8 @@ export function renderPostsPageComponent({ posts }) {
   renderHeaderComponent({
     element: document.querySelector(".header-container"),
   });
+
+
   // KAM Событие для перехода на страницу постов пользователя 
   for (let userEl of document.querySelectorAll(".post-header")) {
     userEl.addEventListener("click", () => {
@@ -72,6 +74,8 @@ export function renderPostsPageComponent({ posts }) {
       });
     });
   }
+
+
   // KAM функция установки лайков
 
   const likeElementFunction = () => {
@@ -82,25 +86,11 @@ export function renderPostsPageComponent({ posts }) {
         // Проверяем стоит ли уже лайк
         if (likeElement.dataset.isliked === 'true') {
           return dislike({ id: likeElement.dataset.postId, token: getToken() })
-          // .then(() => {
-          //   return getPosts({ token: getToken() })
-          //   .then(() => {
-          //     renderApp();
-          //   })
-
-
-          // })
-
+          
         }
         else {
           return addLike({ id: likeElement.dataset.postId, token: getToken() });
-          // renderApp();
-          // .then((data) => {
-          //   console.log(data);
-          //   // renderPostsPageComponent(data);
-
-          //   // alert("Ура лайк!");
-          // });
+          
 
         };
 
