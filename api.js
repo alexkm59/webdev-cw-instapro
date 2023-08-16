@@ -1,8 +1,10 @@
 // Замени на свой, чтобы получить независимый от других набор данных.
 // "боевая" версия инстапро лежит в ключе prod
 // const personalKey = "prod";
-import {getToken, renderApp} from "./index.js";
-import {renderPostsPageComponent} from "./components/posts-page-component.js";
+import { getToken, renderApp } from "./index.js";
+import { renderPostsPageComponent } from "./components/posts-page-component.js";
+import {renderUserPageComponent} from "./components/user-page-component.js"
+
 
 const personalKey = ":alex-karmanov";
 const baseHost = "https://webdev-hw-api.vercel.app";
@@ -20,15 +22,18 @@ export function getPosts({ token }) {
 
   })
     .then((response) => {
+      console.log(response);
+
       if (response.status === 401) {
         throw new Error("Нет авторизации");
       }
 
       return response.json();
     })
-  .then((data) => {
-    return data.posts;
-  });
+    .then((ta) => {
+      console.log(ta);
+      return ta.posts;
+    });
 }
 
 // https://github.com/GlebkaF/webdev-hw-api/blob/main/pages/api/user/README.md#%D0%B0%D0%B2%D1%82%D0%BE%D1%80%D0%B8%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%D1%81%D1%8F
@@ -105,12 +110,15 @@ export function postPost({ description, imageUrl, token }) {
 
 
 // КАМ функция получения постов пользователя
-export function getUserPosts(data) {
+export function getUserPosts({ Id, token }) {
 
-  return fetch(postsHost + "/user-posts/" + data , {
+  return fetch(postsHost + "/user-posts/" + Id, {
 
     method: "GET",
-    
+    headers: {
+      Authorization: token,
+    },
+
 
   })
     .then((response) => {
@@ -128,15 +136,15 @@ export function getUserPosts(data) {
 
 // КАМ функция добавления лайка
 
-export function addLike({ id, token }) {
+export function addLike({ id, token, currentPage, Id }) {
 
-  return fetch(postsHost + "/" + id + "/like" , {
+  return fetch(postsHost + "/" + id + "/like", {
 
     method: "POST",
     headers: {
       Authorization: token,
     },
-    
+
 
   })
     .then((response) => {
@@ -146,47 +154,79 @@ export function addLike({ id, token }) {
 
       return response.json();
     })
-    .then (() =>{
-      return getPosts({ token: getToken() })
-    }) 
-              .then((posts) => {
-                return renderPostsPageComponent({
-                  // appEl,
-                  posts,
-                });
-              })
-    
+    .then(() => {
+      if (currentPage === 'USER_POSTS_PAGE') {
+        return getUserPosts({ Id, token: getToken() })
+
+      }
+      else {
+        return getPosts({ token: getToken() })
+      }
+
+    })
+    .then((posts) => {
+      if (currentPage === 'USER_POSTS_PAGE') {
+        return renderUserPageComponent({
+          // appEl,
+          posts,
+        });
+      }
+      else {
+        return renderPostsPageComponent({
+          // appEl,
+          posts,
+        });
+      }
+      
+    })
+
 }
 
 // КАМ функция удаления лайка
 
-export function dislike({ id, token }) {
+export function dislike({ id, token, currentPage, Id }) {
 
-  return fetch(postsHost + "/" + id + "/dislike" , {
+  return fetch(postsHost + "/" + id + "/dislike", {
 
     method: "POST",
     headers: {
       Authorization: token,
     },
-   
+
 
   })
     .then((response) => {
       if (response.status === 401) {
         throw new Error("Вы не авторизованы, авторизуйтесь для удаления лайка");
       }
-      
+
       return response.json();
     })
-    .then (() =>{
-      return getPosts({ token: getToken() })
-    }) 
-              .then((posts) => {
-                return renderPostsPageComponent({
-                  // appEl,
-                  posts,
-                });
-              })
+    .then(() => {
+      if (currentPage === 'USER_POSTS_PAGE') {
+        return getUserPosts({ Id, token: getToken() })
 
-    
+      }
+      else {
+        return getPosts({ token: getToken() })
+      }
+
+    })
+    .then((posts) => {
+      if (currentPage === 'USER_POSTS_PAGE') {
+        return renderUserPageComponent({
+          // appEl,
+          posts,
+        });
+      }
+      else {
+        return renderPostsPageComponent({
+          // appEl,
+          posts,
+        });
+      }
+      
+    })
+
+
 }

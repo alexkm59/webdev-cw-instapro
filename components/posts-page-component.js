@@ -4,7 +4,7 @@ import { posts, goToPage, getToken, renderApp } from "../index.js";
 import { addLike, dislike, getPosts } from "../api.js";
 import { format } from "date-fns";
 
-export function renderPostsPageComponent({ posts }) {
+export function renderPostsPageComponent({appEl, posts }) {
   
   // TODO: реализовать рендер постов из api
 
@@ -38,12 +38,13 @@ export function renderPostsPageComponent({ posts }) {
                        <img class="post-image" src="${posts.imageUrl}">
                      </div>
                      <div class="post-likes">
-                       <button data-post-id="${posts.id}" data-isliked="${(posts.isLiked) ? true : false}" class="like-button">
+                       <button data-post-id="${posts.id}" data-isliked="${(posts.isLiked) ? true : false}" class="like-button like-button-post">
                          <img src= ${(posts.isLiked) ? "./assets/images/like-active.svg" : "./assets/images/like-not-active.svg"}>
                        </button>
                        <p class="post-likes-text">
                          Нравится: <strong>
-                           ${posts.likes[0].name} ${(posts.likes.length - 1) === 0 ? "" : "и еще " + (posts.likes.length - 1)}
+
+                           ${posts.likes.length ? posts.likes[0].name : "0"} ${(posts.likes.length - 1) <= 0 ? "" : "и еще " + (posts.likes.length - 1)}
                           
                           </strong>
                        </p>
@@ -72,33 +73,32 @@ export function renderPostsPageComponent({ posts }) {
       goToPage(USER_POSTS_PAGE, {
         userId: userEl.dataset.userId,
       });
+      
     });
+    
+    
+
   }
 
-
+  
   // KAM функция установки лайков
 
   const likeElementFunction = () => {
-    const likeElements = document.querySelectorAll(".like-button");
+    const likeElements = document.querySelectorAll(".like-button-post");
     for (const likeElement of likeElements) {
       likeElement.addEventListener("click", () => {
-
+        let currentPage = 'POSTS_PAGE';
         // Проверяем стоит ли уже лайк
         if (likeElement.dataset.isliked === 'true') {
-          return dislike({ id: likeElement.dataset.postId, token: getToken() })
-          
+          return dislike({ id: likeElement.dataset.postId, token: getToken(), currentPage })
         }
         else {
-          return addLike({ id: likeElement.dataset.postId, token: getToken() });
-          
-
+          return addLike({ id: likeElement.dataset.postId, token: getToken(), currentPage });
+        
         };
 
       })
-
     }
-
-
   };
 
 

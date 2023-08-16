@@ -9,6 +9,7 @@ import {
   USER_POSTS_PAGE,
 } from "./routes.js";
 import { renderPostsPageComponent } from "./components/posts-page-component.js";
+import {renderUserPageComponent} from "./components/user-page-component.js"
 import { renderLoadingPageComponent } from "./components/loading-page-component.js";
 import {
   getUserFromLocalStorage,
@@ -74,7 +75,7 @@ export const goToPage = (newPage, data) => {
       
       console.log("Открываю страницу пользователя: ", data.userId);
       
-      return getUserPosts(data.userId)
+      return getUserPosts({Id: data.userId, token:getToken()} )
       .then((newPosts) => {
       page = USER_POSTS_PAGE;
       // posts = [];
@@ -151,9 +152,11 @@ export const renderApp = () => {
     // appEl.innerHTML = "Здесь будет страница фотографий пользователя";
 
     // KAM пробуем переиспользовать функцию
-    return renderPostsPageComponent({
+    // заменили renderPostPageComponent на renderUserPageComponent
+    return renderUserPageComponent({
       appEl,
       posts,
+      page
     });
     // return;
   }
