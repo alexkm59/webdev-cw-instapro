@@ -1,5 +1,6 @@
 import { renderHeaderComponent } from "./header-component.js";
 
+
 export function renderLoadingPageComponent({ appEl, user, goToPage }) {
   const appHtml = `
               <div class="page-container">
@@ -16,4 +17,6 @@ export function renderLoadingPageComponent({ appEl, user, goToPage }) {
     element: document.querySelector(".header-container"),
     goToPage,
   });
+
+  
 }

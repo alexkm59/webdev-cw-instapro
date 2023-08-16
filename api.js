@@ -1,25 +1,38 @@
 // Замени на свой, чтобы получить независимый от других набор данных.
 // "боевая" версия инстапро лежит в ключе prod
-const personalKey = "prod";
+// const personalKey = "prod";
+import { getToken, renderApp } from "./index.js";
+import { renderPostsPageComponent } from "./components/posts-page-component.js";
+import {renderUserPageComponent} from "./components/user-page-component.js"
+
+
+const personalKey = ":alex-karmanov";
 const baseHost = "https://webdev-hw-api.vercel.app";
 const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
+const prodHost = "https://wedev-api.sky.pro/api/v1/prod/instapro";
 
 export function getPosts({ token }) {
+
   return fetch(postsHost, {
+
     method: "GET",
     headers: {
       Authorization: token,
     },
+
   })
     .then((response) => {
+      console.log(response);
+
       if (response.status === 401) {
         throw new Error("Нет авторизации");
       }
 
       return response.json();
     })
-    .then((data) => {
-      return data.posts;
+    .then((ta) => {
+      console.log(ta);
+      return ta.posts;
     });
 }
 
@@ -67,4 +80,153 @@ export function uploadImage({ file }) {
   }).then((response) => {
     return response.json();
   });
+}
+
+// КАМ функция добавления постов
+
+export function postPost({ description, imageUrl, token }) {
+
+  return fetch(postsHost, {
+
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
+    body: JSON.stringify({
+      description,
+      imageUrl,
+    }),
+
+  })
+    .then((response) => {
+      if (response.status === 400) {
+        throw new Error("В теле запроса не передан description или В теле запроса не передан imageUrl или В description - пустая строчка.");
+      }
+
+      return response.json();
+    })
+
+}
+
+
+// КАМ функция получения постов пользователя
+export function getUserPosts({ Id, token }) {
+
+  return fetch(postsHost + "/user-posts/" + Id, {
+
+    method: "GET",
+    headers: {
+      Authorization: token,
+    },
+
+
+  })
+    .then((response) => {
+      if (response.status !== 200) {
+        throw new Error("Получить посты пользователя не удалось.");
+      }
+
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data.posts);
+      return data.posts;
+    });
+}
+
+// КАМ функция добавления лайка
+
+export function addLike({ id, token, currentPage, Id }) {
+
+  return fetch(postsHost + "/" + id + "/like", {
+
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
+
+
+  })
+    .then((response) => {
+      if (response.status === 401) {
+        throw new Error("Вы не авторизованы, авторизуйтесь для установки лайка");
+      }
+
+      return response.json();
+    })
+    .then(() => {
+      if (currentPage === 'USER_POSTS_PAGE') {
+        return getUserPosts({ Id, token: getToken() })
+
+      }
+      else {
+        return getPosts({ token: getToken() })
+      }
+
+    })
+    .then((posts) => {
+      if (currentPage === 'USER_POSTS_PAGE') {
+        return renderUserPageComponent({
+          // appEl,
+          posts,
+        });
+      }
+      else {
+        return renderPostsPageComponent({
+          // appEl,
+          posts,
+        });
+      }
+      
+    })
+
+}
+
+// КАМ функция удаления лайка
+
+export function dislike({ id, token, currentPage, Id }) {
+
+  return fetch(postsHost + "/" + id + "/dislike", {
+
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
+
+
+  })
+    .then((response) => {
+      if (response.status === 401) {
+        throw new Error("Вы не авторизованы, авторизуйтесь для удаления лайка");
+      }
+
+      return response.json();
+    })
+    .then(() => {
+      if (currentPage === 'USER_POSTS_PAGE') {
+        return getUserPosts({ Id, token: getToken() })
+
+      }
+      else {
+        return getPosts({ token: getToken() })
+      }
+
+    })
+    .then((posts) => {
+      if (currentPage === 'USER_POSTS_PAGE') {
+        return renderUserPageComponent({
+          // appEl,
+          posts,
+        });
+      }
+      else {
+        return renderPostsPageComponent({
+          // appEl,
+          posts,
+        });
+      }
+      
+    })
+
+
 }

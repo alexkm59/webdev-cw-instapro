@@ -22,9 +22,7 @@ export function renderUploadImageComponent({ element, onImageUrlChange }) {
                   style="display:none"
                 />
                 Выберите фото
-            </label>
-          
-      `
+            </label>`
       }
   </div>
 `;
@@ -35,8 +33,10 @@ export function renderUploadImageComponent({ element, onImageUrlChange }) {
       const file = fileInputElement.files[0];
       if (file) {
         const lableEl = document.querySelector(".file-upload-label");
+        
         lableEl.setAttribute("disabled", true);
         lableEl.textContent = "Загружаю файл...";
+        
         uploadImage({ file }).then(({ fileUrl }) => {
           imageUrl = fileUrl;
           onImageUrlChange(imageUrl);
